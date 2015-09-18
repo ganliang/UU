@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.uugty.validate.domain.Mark">
+
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
+
+	<!-- 基本查询获取的数据 -->
+	<resultMap id="BaseResultMap" type="com.uugty.validate.domain.Mark">
+		<id column="mark_id" property="markId" jdbcType="INTEGER" />
+
+		<result column="mark_title" property="markTitle" jdbcType="VARCHAR" />
+
+		<result column="mark_content" property="markContent" jdbcType="VARCHAR" />
+
+		<result column="mark_images" property="markImages" jdbcType="VARCHAR" />
+
+		<result column="mark_search_type" property="markSearchType"
+			jdbcType="VARCHAR" />
+
+		<result column="mark_weight" property="markWeight" jdbcType="VARCHAR" />
+
+		<result column="mark_date" property="markDate" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<select id="getAllMark" resultMap="BaseResultMap">
+		SELECT *FROM T_MARK;
+	</select>
+
+	<update id="addMarkContent">
+		UPDATE T_MARK SET
+		mark_content=mark_content+1 WHERE mark_id IN
+		<foreach item="markId" index="index" collection="markIds"
+			open="(" separator="," close=")">
+			#{markId}
+		</foreach>
+	</update>
+</mapper>

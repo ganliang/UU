@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.uugty.validate.domain.WithdrawCash">
+
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
+
+	<!-- 基本查询获取的数据 -->
+	<resultMap id="BaseResultMap" type="com.uugty.validate.domain.WithdrawCash">
+		<id column="withdraw_id" property="withdrawId" jdbcType="INTEGER" />
+
+		<result column="user_id" property="userId" jdbcType="VARCHAR" />
+
+		<result column="withdraw_bank_card" property="withdrawBankCard"
+			jdbcType="VARCHAR" />
+
+		<result column="withdraw_bank_card_type" property="withdrawBankCardType"
+			jdbcType="VARCHAR" />
+
+		<result column="withdraw_money" property="withdrawMoney"
+			jdbcType="VARCHAR" />
+
+		<result column="withdraw_date" property="withdrawDate"
+			jdbcType="VARCHAR" />
+
+		<result column="out_trade_no" property="outTradeNo" jdbcType="VARCHAR" />
+
+	</resultMap>
+
+	<!-- 找到所有的路线的数量 -->
+	<select id="findAllWithdrawCount" parameterType="withdrawcash"
+		resultType="Integer">
+		SELECT COUNT(withdraw_id) FROM T_WITHDRAW_CASH WHERE
+		withdraw_status=#{withdrawStatus}
+	</select>
+
+	<!-- 找到所有的路线 -->
+	<select id="findAllWithdraw" parameterType="Map" resultMap="BaseResultMap">
+		SELECT
+		withdraw_id,user_id,withdraw_bank_card,withdraw_bank_card_type,withdraw_money,out_trade_no,date_format(withdraw_date,'%Y-%m-%d')
+		withdraw_date
+		FROM T_WITHDRAW_CASH WHERE
+		withdraw_status=#{withdrawStatus}
+		ORDER BY
+		withdraw_date
+		ASC
+		LIMIT
+		#{beginIndex},#{pageSize}
+	</select>
+
+	<update id="updateWithDrawStatus" parameterType="withdrawcash">
+		UPDATE
+		T_WITHDRAW_CASH set withdraw_status=#{status}
+		WHERE
+		withdraw_id=#{withdrawId}
+	</update>
+</mapper>

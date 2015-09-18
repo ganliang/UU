@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+	<!-- 配置延迟加载 -->
+	<settings>
+		<setting name="lazyLoadingEnabled" value="true" />
+		<setting name="aggressiveLazyLoading" value="false" />
+
+		<!-- 配置mybatis的2级缓存 -->
+		<setting name="cacheEnabled" value="true" />
+
+
+	</settings>
+
+	<!-- 配置方言 -->
+	<typeAliases>
+		<typeAlias type="com.uugty.validate.domain.User" alias="user" />
+		<typeAlias type="com.uugty.validate.domain.Roadline" alias="roadline" />
+		<typeAlias type="com.uugty.validate.domain.WithdrawCash"
+			alias="withdrawcash" />
+		<typeAlias type="com.uugty.validate.domain.Mark" alias="mark" />
+		<typeAlias type="com.uugty.validate.domain.Order" alias="order" />
+		<typeAlias type="com.uugty.validate.domain.PromoteUser"
+			alias="promoteUser" />
+	</typeAliases>
+
+	<!-- 配置映射文件 -->
+	<mappers>
+		<mapper resource="com/uugty/validate/domain/UserMapper.xml" />
+		<mapper resource="com/uugty/validate/domain/RoadlineMapper.xml" />
+		<mapper resource="com/uugty/validate/domain/WithdrawCashMapper.xml" />
+		<mapper resource="com/uugty/validate/domain/MarkMapper.xml" />
+		<mapper resource="com/uugty/validate/domain/OrderMapper.xml" />
+		<mapper resource="com/uugty/validate/domain/PromoteUserMapper.xml" />
+	</mappers>
+
+</configuration>
