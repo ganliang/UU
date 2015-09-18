@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.uugty.validate.domain.Roadline">
+
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
+
+	<!-- 基本查询获取的数据 -->
+	<resultMap id="BaseResultMap" type="com.uugty.validate.domain.Roadline">
+		<id column="roadline_id" property="roadlineId" jdbcType="INTEGER" />
+
+		<result column="user_id" property="userId" jdbcType="VARCHAR" />
+
+		<result column="user_avatar" property="userAvatar" jdbcType="VARCHAR" />
+
+		<result column="roadline_title" property="roadlineTitle"
+			jdbcType="VARCHAR" />
+
+		<result column="roadline_price" property="roadlinePrice"
+			jdbcType="VARCHAR" />
+
+		<result column="roadline_content" property="roadlineContent"
+			jdbcType="VARCHAR" />
+
+		<result column="roadline_goal_area" property="roadlineGoalArea"
+			jdbcType="VARCHAR" />
+
+		<result column="describe_images" property="describeImages"
+			jdbcType="VARCHAR" />
+
+		<result column="roadline_background" property="roadlineBackground"
+			jdbcType="VARCHAR" />
+
+		<result column="roadline_create_date" property="roadlineCreateDate"
+			jdbcType="VARCHAR" />
+
+
+
+		<result column="user_tel_validate" property="userTelValidate"
+			jdbcType="INTEGER" />
+		<result column="user_avatar_validate" property="userAvatarValidate"
+			jdbcType="INTEGER" />
+		<result column="user_certificate_validate" property="userCertificateValidate"
+			jdbcType="INTEGER" />
+		<result column="user_id_validate" property="userIdValidate"
+			jdbcType="INTEGER" />
+		<result column="user_tour_validate" property="userTourValidate"
+			jdbcType="INTEGER" />
+		<result column="user_car_validate" property="userCarValidate"
+			jdbcType="INTEGER" />
+	</resultMap>
+
+	<!-- 找到所有的路线的数量 -->
+	<select id="findAllRoadlineCount" parameterType="roadline"
+		resultType="Integer">
+		SELECT COUNT(ROADLINE_ID) FROM T_ROADLINE WHERE
+		roadline_status=#{roadlineStatus}
+	</select>
+
+	<!-- 找到所有的路线 -->
+	<select id="findAllRoadline" parameterType="Map" resultMap="BaseResultMap">
+		SELECT
+		roadline_id,roadline_title,roadline_price,roadline_content,roadline_goal_area,roadline_create_date,
+		(SELECT GROUP_CONCAT(describe_image) FROM T_ROADLINE_DESCRIBE WHERE
+		describe_roadline_id=roadline_id)
+		describe_images,roadline_background,user_id,user_avatar,user_tel_validate,user_avatar_validate,user_certificate_validate,user_id_validate,user_tour_validate,user_car_validate
+		FROM
+		T_ROADLINE LEFT JOIN T_USER ON(user_id=roadline_user_id) WHERE
+		roadline_status=#{roadlineStatus}
+		ORDER BY
+		ROADLINE_CREATE_DATE
+		DESC
+		LIMIT
+		#{beginIndex},#{pageSize}
+	</select>
+
+	<update id="dropRoadline" parameterType="roadline">
+		UPDATE T_ROADLINE
+		<set>
+			<if test="status!=null">roadline_status=#{status}</if>
+			<if test="roadlineIsHot!=null">,roadline_is_hot=#{roadlineIsHot}</if>
+			<if test="validateResaon!=null">,validate_resaon=#{validateResaon}</if>
+		</set>
+		WHERE roadline_id=#{roadlineId}
+	</update>
+	
+	<select id="findRoadlineById" parameterType="roadline" resultMap="BaseResultMap">
+	   SELECT *FROM T_ROADLINE WHERE roadline_id=#{roadlineId}
+	</select>
+</mapper>

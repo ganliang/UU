@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.uugty.validate.domain.Order">
+
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
+
+	<!-- 基本查询获取的数据 -->
+	<resultMap id="BaseResultMap" type="com.uugty.validate.domain.Order">
+		<id column="order_id" property="orderId" jdbcType="INTEGER" />
+		<result column="order_user_id" property="orderUserId" jdbcType="VARCHAR" />
+		<result column="order_tour_user_id" property="orderTourUserId"
+			jdbcType="VARCHAR" />
+		<result column="order_roadline_id" property="orderRoadlineId"
+			jdbcType="INTEGER" />
+
+		<result column="order_no" property="orderNo" jdbcType="VARCHAR" />
+		<result column="order_mark" property="orderMark" jdbcType="VARCHAR" />
+		<result column="order_time" property="orderTime" jdbcType="VARCHAR" />
+		<result column="order_price" property="orderPrice" jdbcType="VARCHAR" />
+
+		<result column="order_drawback_reason" property="orderDrawbackReason"
+			jdbcType="VARCHAR" />
+		<result column="order_drawback_money" property="orderDrawbackMoney"
+			jdbcType="VARCHAR" />
+		<result column="order_drawback_date" property="orderDrawbackDate"
+			jdbcType="VARCHAR" />
+
+		<result column="order_status" property="orderStatus" jdbcType="VARCHAR" />
+		<result column="order_create_date" property="orderCreateDate"
+			jdbcType="VARCHAR" />
+
+		<result column="user_tel" property="userTel" jdbcType="VARCHAR" />
+		<result column="user_name" property="userName" jdbcType="DATE" />
+		<result column="user_avatar" property="userAvatar" jdbcType="VARCHAR" />
+		<result column="user_identity_card" property="userIdentityCard"
+			jdbcType="VARCHAR" />
+	</resultMap>
+
+	<!-- 找到订单的数量 -->
+	<select id="findAllOrderCount" parameterType="order" resultType="Integer">
+		SELECT COUNT(ORDER_ID) FROM T_ORDER WHERE
+		order_status=#{orderStatus}
+	</select>
+
+	<!-- 找到所有的订单 -->
+	<select id="findAllOrder" parameterType="Map" resultMap="BaseResultMap">
+		SELECT
+		order_id,order_user_id,order_tour_user_id,order_roadline_id,order_no,order_mark,DATE_FORMAT(order_time,'%Y-%m-%d')
+		order_time,order_price,order_status,DATE_FORMAT(order_create_date,'%Y-%m-%d')
+		order_create_date,order_drawback_reason,order_drawback_money,
+		DATE_FORMAT(order_drawback_date,'%Y-%m-%d') order_drawback_date,
+		user_tel,user_name,user_avatar,user_identity_card
+		FROM
+		T_ORDER LEFT JOIN
+		T_USER
+		ON(user_id=order_user_id) WHERE
+		order_status=#{orderStatus}
+		ORDER
+		BY
+		ORDER_CREATE_DATE
+		DESC
+		LIMIT
+		#{beginIndex},#{pageSize}
+	</select>
+</mapper>

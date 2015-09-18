@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.uugty.validate.domain.User">
+
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
+
+	<!-- 基本查询获取的数据 -->
+	<resultMap id="BaseResultMap" type="com.uugty.validate.domain.User">
+		<id column="user_id" property="userId" jdbcType="VARCHAR" />
+		<result column="user_name" property="userName" jdbcType="VARCHAR" />
+		<result column="user_age" property="userAge" jdbcType="INTEGER" />
+		<result column="user_password" property="userPassword"
+			jdbcType="VARCHAR" />
+
+		<result column="user_birthday" property="userBirthday"
+			jdbcType="DATE" />
+		<result column="user_sex" property="userSex" jdbcType="INTEGER" />
+
+		<result column="user_car" property="userCar" jdbcType="VARCHAR" />
+		<result column="user_car_validate" property="userCarValidate"
+			jdbcType="INTEGER" />
+		<result column="user_car_validate_date" property="userCarValidateDate"
+			jdbcType="DATE" />
+
+		<result column="user_avatar" property="userAvatar" jdbcType="VARCHAR" />
+		<result column="user_avatar_validate" property="userAvatarValidate"
+			jdbcType="INTEGER" />
+
+		<result column="user_tel" property="userTel" jdbcType="VARCHAR" />
+		<result column="user_tel_validate_date" property="userTelValidateDate"
+			jdbcType="DATE" />
+		<result column="user_tel_validate" property="userTelValidate"
+			jdbcType="INTEGER" />
+
+		<result column="user_certificate" property="userCertificate"
+			jdbcType="VARCHAR" />
+		<result column="user_certificate_validate_date" property="userCertificateValidateDate"
+			jdbcType="DATE" />
+		<result column="user_certificate_validate" property="userCertificateValidate"
+			jdbcType="INTEGER" />
+
+		<result column="user_identity" property="userIdentity"
+			jdbcType="VARCHAR" />
+		<result column="user_id_validate_date" property="userIdValidateDate"
+			jdbcType="DATE" />
+		<result column="user_id_validate" property="userIdValidate"
+			jdbcType="INTEGER" />
+
+		<result column="user_tour_card" property="userTourCard"
+			jdbcType="VARCHAR" />
+		<result column="user_tour_validate_date" property="userTourValidateDate"
+			jdbcType="DATE" />
+		<result column="user_tour_validate" property="userTourValidate"
+			jdbcType="INTEGER" />
+
+		<result column="user_last_login_date" property="userLastLoginDate"
+			jdbcType="DATE" />
+
+		<result column="wx_nickname" property="wxNickname" jdbcType="VARCHAR" />
+		<result column="wx_sex" property="wxSex" jdbcType="VARCHAR" />
+		<result column="wx_headimgurl" property="wxHeadimgurl"
+			jdbcType="VARCHAR" />
+		<result column="user_description" property="userDescription"
+			jdbcType="VARCHAR" />
+
+		<result column="user_login_type" property="userLoginType"
+			jdbcType="INTEGER" />
+		<result column="user_life_photo" property="userLifePhoto"
+			jdbcType="VARCHAR" />
+		<result column="user_register_date" property="userRegisterDate"
+			jdbcType="VARCHAR" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		userId,userName,userAge,userPassword,userBirthday, AGE,
+		BIRTHDAY, GENDER,PASSWORD
+	</sql>
+
+	<!-- 根据用户名和密码来登录 -->
+	<select id="selectPersonByNameAndPassword" parameterType="user"
+		resultMap="BaseResultMap">
+		select *from ssi_person where name=#{name} and
+		password=#{password}
+	</select>
+
+	<!-- 找到所有的用户 -->
+	<select id="findAllUser" parameterType="Map" resultMap="BaseResultMap">
+		SELECT
+		*FROM T_USER WHERE 1=1
+		<if test="userTel!=null and userTel!=''">AND user_tel=#{userTel}</if>
+		<if test="userName!=null and userName!=''">AND user_name=#{userName}</if>
+		<if test="type!=null and type!=''">
+			<if test="type=='identity'">AND user_id_validate=#{userIdValidate}</if>
+			<if test="type=='certificate'">AND user_certificate_validate=#{userCertificateValidate}
+			</if>
+			<if test="type=='tourcard'">AND user_tour_validate=#{userTourValidate}</if>
+			<if test="type=='avatar'">AND user_avatar_validate=#{userAvatarValidate}</if>
+			<if test="type=='car'">AND user_car_validate=#{userCarValidate}</if>
+		</if>
+		ORDER BY USER_REGISTER_DATE DESC LIMIT
+		#{beginIndex},#{pageSize}
+	</select>
+
+	<!-- 找到所有的用户的数量 -->
+	<select id="findAllUserCount" parameterType="user" resultType="Integer">
+		SELECT COUNT(USER_ID) FROM T_USER WHERE 1=1
+		<if test="userTel!=null and userTel!=''">AND user_tel=#{userTel}</if>
+		<if test="userName!=null and userName!=''">AND user_name=#{userName}</if>
+		<if test="type!=null and type!=''">
+			<if test="type=='identity'">AND user_id_validate=#{userIdValidate}</if>
+			<if test="type=='certificate'">AND user_certificate_validate=#{userCertificateValidate}
+			</if>
+			<if test="type=='tourcard'">AND user_tour_validate=#{userTourValidate}</if>
+			<if test="type=='avatar'">AND user_avatar_validate=#{userAvatarValidate}</if>
+			<if test="type=='car'">AND user_car_validate=#{userCarValidate}</if>
+		</if>
+	</select>
+
+	<!-- 验证拒绝 -->
+	<update id="validateReject" parameterType="user">
+		UPDATE T_USER
+		<set>
+			<if test="type=='identity'">
+				USER_ID_VALIDATE=0 , USER_ID_VALIDATE_DATE=NOW()
+			</if>
+			<if test="type=='certificate'">
+				USER_CERTIFICATE_VALIDATE=4 ,
+				USER_CERTIFICATE_VALIDATE_DATE=NOW()
+			</if>
+			<if test="type=='tourcard'">
+				USER_TOUR_VALIDATE=4 , USER_TOUR_VALIDATE_DATE=NOW()
+			</if>
+			<if test="type=='avatar'">
+				USER_AVATAR_VALIDATE=4 ,
+				USER_AVATAR_VALIDATE_DATE=NOW(),USER_AVATAR=''
+			</if>
+			<if test="type=='car'">
+				USER_CAR_VALIDATE=4 ,
+				USER_CAR_VALIDATE_DATE=NOW()
+			</if>
+		</set>
+		WHERE USER_ID=#{userId}
+	</update>
+
+	<!-- 验证采纳 -->
+	<update id="validateAdopt" parameterType="user">
+		UPDATE T_USER
+		<set>
+			<if test="type=='identity'">
+				USER_ID_VALIDATE=2 , USER_ID_VALIDATE_DATE=NOW()
+			</if>
+			<if test="type=='certificate'">
+				USER_CERTIFICATE_VALIDATE=2 ,
+				USER_CERTIFICATE_VALIDATE_DATE=NOW()
+			</if>
+			<if test="type=='tourcard'">
+				USER_TOUR_VALIDATE=2 , USER_TOUR_VALIDATE_DATE=NOW()
+			</if>
+			<if test="type=='avatar'">
+				USER_AVATAR_VALIDATE=2 , USER_AVATAR_VALIDATE_DATE=NOW()
+			</if>
+			<if test="type=='car'">
+				USER_CAR_VALIDATE=2 ,
+				USER_CAR_VALIDATE_DATE=NOW()
+			</if>
+		</set>
+		WHERE USER_ID=#{userId}
+	</update>
+
+	<update id="validateIdentifyAdopt" parameterType="user">
+		UPDATE T_USER
+		SET
+		user_realname=#{userRealname},user_sex=#{userSex},user_birthday=#{userBirthday},user_identity_card=#{userIdentityCard},user_id_validate=2,user_id_validate_date=NOW()
+		WHERE user_id=#{userId}
+	</update>
+</mapper>

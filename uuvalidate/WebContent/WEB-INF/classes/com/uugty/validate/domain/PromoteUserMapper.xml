@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.uugty.validate.domain.PromoteUser">
+
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
+
+	<!-- 基本查询获取的数据 -->
+	<resultMap id="BaseResultMap" type="com.uugty.validate.domain.PromoteUser">
+		<id column="promote_user_id" property="promoteUserId" jdbcType="VARCHAR" />
+
+		<result column="promote_user_name" property="promoteUserName"
+			jdbcType="DATE" />
+
+		<result column="create_date" property="createDate" jdbcType="DATE" />
+		<result column="last_register_date" property="lastRegisterDate"
+			jdbcType="DATE" />
+		<result column="last_download_date" property="lastDownloadDate"
+			jdbcType="DATE" />
+
+		<result column="register_count" property="registerCount"
+			jdbcType="INTEGER" />
+		<result column="download_count" property="downloadCount"
+			jdbcType="INTEGER" />
+
+		<result column="qr_code" property="qrCode" jdbcType="VARCHAR" />
+		<result column="apk_dest" property="apkDest" jdbcType="VARCHAR" />
+	</resultMap>
+
+
+
+	<!-- 找到所有的用户 -->
+	<select id="findAllPromoteUser" parameterType="Map" resultMap="BaseResultMap">
+		SELECT
+		*FROM T_PROMOTE_USER WHERE 1=1
+		ORDER BY create_date DESC
+		LIMIT
+		#{beginIndex},#{pageSize}
+	</select>
+
+	<!-- 找到所有的用户的数量 -->
+	<select id="findAllPromoteUserCount" parameterType="promoteUser"
+		resultType="Integer">
+		SELECT
+		COUNT(promote_user_id) FROM T_PROMOTE_USER
+	</select>
+
+	<!-- 添加推广人员 -->
+	<insert id="savePromoteUser" parameterType="promoteUser">
+		INSERT INTO
+		T_PROMOTE_USER(promote_user_id,promote_user_name,qr_code,apk_dest,create_date)
+		VALUES(#{promoteUserId},#{promoteUserName},#{qrCode},#{apkDest},NOW());
+	</insert>
+
+	<!-- 更新推广人员的二维码和apk地址 -->
+	<update id="updatePromoteUser" parameterType="promoteUser">
+		UPDATE
+		T_PROMOTE_USER SET qr_code=#{qrCode},apk_dest=#{apkDest} WHERE
+		promote_user_id=#{promoteUserId}
+	</update>
+</mapper>
